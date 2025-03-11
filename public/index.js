@@ -16,7 +16,7 @@ async function translateText(inputText) {
 
     const payload = {
         messages: [
-            { role: "system", content: `You are a helpful assistant that translates text.` },
+            { role: "system", content: `You are a helpful assistant that translates text between arabic and english.` },
             { role: "user", content: prompt }
         ],
         model: "llama3-70b-8192", // Use the Llama 3 model
