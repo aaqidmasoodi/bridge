@@ -7,7 +7,8 @@ const chatThread = document.getElementsByClassName('chat-thread')[0];
 const API_KEY = "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"; // Replace with your Groq API key
 
 // WebSocket Connection
-const socket = new WebSocket('ws://localhost:8080'); // Connect to your WebSocket server
+// WebSocket Connection
+const socket = new WebSocket('wss://bridge-server-socket.onrender.com'); // Updated WebSocket URL
 
 // Function to translate text using Groq API and Llama 3
 async function translateText(inputText) {
