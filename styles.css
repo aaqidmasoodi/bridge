@@ -8,13 +8,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
 }
 
 .main {
     background-color: darkcyan;
     width: 95vw;
-    height: 95vh;
+    height: 65vh;
     display: flex;
     flex-direction: column;
 }

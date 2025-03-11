@@ -11,7 +11,7 @@ const socket = new WebSocket('ws://localhost:8080'); // Connect to your WebSocke
 
 // Function to translate text using Groq API and Llama 3
 async function translateText(inputText) {
-    const prompt = `Translate the following text to Arabic if it is in English, or to English if it is in Arabic. Do not add any extra words. Only provide the translated text: ${inputText}`;
+    const prompt = `Translate the following text to Arabic if it is in English, or to English if it is in Arabic. Do not add any extra words. Only provide the translated text. Do not say "I'm happy to help! The translation is:". Text: ${inputText}`;
 
     const payload = {
         messages: [
