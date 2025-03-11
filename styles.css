@@ -25,6 +25,7 @@ body {
     flex-direction: column;
     padding: 1.5rem;
     gap: 1.1rem;
+    justify-content: flex-end;
 }
 
 .message-input {
