@@ -79,6 +79,14 @@ body {
 }
 
 
+.credit-box {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+    padding: 1rem;
+    justify-content: center;
+    align-items: center;
+}
 
 .credit-info {
     color: rgb(158, 158, 158);
