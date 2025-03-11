@@ -7,7 +7,34 @@ const chatThread = document.getElementsByClassName('chat-thread')[0];
 const API_KEY = "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"; // Replace with your Groq API key
 
 // WebSocket Connection
-const socket = new WebSocket('wss://bridge-server-socket.onrender.com'); // Updated WebSocket URL
+const socket = new WebSocket('wss://bridge-server-socket.onrender.com');
+
+// Function to update connection status
+function updateConnectionStatus(count) {
+    let connectionStatus = document.getElementById('connection-status');
+
+    if (count === 2) {
+        if (!connectionStatus) {
+            connectionStatus = document.createElement('div');
+            connectionStatus.id = 'connection-status';
+            document.body.insertBefore(connectionStatus, document.body.firstChild);
+        }
+        connectionStatus.textContent = 'Other person is connected.';
+        connectionStatus.style.color = 'green';
+    } else if (count === 1) {
+        if (!connectionStatus) {
+            connectionStatus = document.createElement('div');
+            connectionStatus.id = 'connection-status';
+            document.body.insertBefore(connectionStatus, document.body.firstChild);
+        }
+        connectionStatus.textContent = 'Waiting for another person to connect...';
+        connectionStatus.style.color = 'red';
+    } else if (count === 0) {
+        if (connectionStatus) {
+            connectionStatus.remove(); // Remove the status element if no one is connected
+        }
+    }
+}
 
 // Function to translate text using Groq API and Llama 3
 async function translateText(inputText) {
@@ -50,17 +77,21 @@ async function translateText(inputText) {
 
 // Handle incoming messages from the WebSocket server
 socket.onmessage = (event) => {
-    const message = JSON.parse(event.data); // Parse the message (should be an object with original and translated text)
+    const message = JSON.parse(event.data);
 
-    // Display the received message in the chat thread
-    chatThread.innerHTML += `
-    <div class="bubble gray-bubble">
-        <p class="gray-original-message">${message.original}</p>
-        <p class="gray-translated-message">${message.translated}</p>
-    </div>`;
+    if (message.type === 'connection') {
+        updateConnectionStatus(message.count); // Update connection status based on the count
+    } else {
+        // Display the received message in the chat thread
+        chatThread.innerHTML += `
+        <div class="bubble gray-bubble">
+            <p class="gray-original-message">${message.original}</p>
+            <p class="gray-translated-message">${message.translated}</p>
+        </div>`;
 
-    // Scroll to the bottom of the chat thread
-    chatThread.scrollTop = chatThread.scrollHeight;
+        // Scroll to the bottom of the chat thread
+        chatThread.scrollTop = chatThread.scrollHeight;
+    }
 };
 
 // Event listener for the send button
@@ -106,17 +137,15 @@ messageInputField.addEventListener('keypress', (e) => {
     }
 });
 
-
-
 // PWA
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./service-worker.js')
-        .then((registration) => {
-          console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        })
-        .catch((err) => {
-          console.log('ServiceWorker registration failed: ', err);
-        });
+        navigator.serviceWorker.register('./service-worker.js')
+            .then((registration) => {
+                console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch((err) => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
     });
-  }
+}
