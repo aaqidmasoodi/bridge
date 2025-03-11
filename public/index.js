@@ -19,7 +19,7 @@ async function translateText(inputText) {
             { role: "system", content: `You are a helpful assistant that translates text.` },
             { role: "user", content: prompt }
         ],
-        model: "llama3-8b-8192", // Use the Llama 3 model
+        model: "llama3-70b-8192", // Use the Llama 3 model
         temperature: 0.7,
         max_tokens: 1024,
         top_p: 1,
