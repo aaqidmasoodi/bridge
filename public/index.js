@@ -19,7 +19,7 @@ function updateConnectionStatus(count) {
             connectionStatus.id = 'connection-status';
             document.body.insertBefore(connectionStatus, document.body.firstChild);
         }
-        connectionStatus.textContent = 'Other person is connected. (الشخص الآخر متصل.)';
+        connectionStatus.textContent = '... الشخص الآخر متصل';
         connectionStatus.style.color = 'green';
     } else if (count === 1) {
         if (!connectionStatus) {
@@ -27,7 +27,7 @@ function updateConnectionStatus(count) {
             connectionStatus.id = 'connection-status';
             document.body.insertBefore(connectionStatus, document.body.firstChild);
         }
-        connectionStatus.textContent = 'Waiting for another person to connect... (في انتظار شخص آخر للاتصال...)';
+        connectionStatus.textContent = '... في انتظار شخص آخر للاتصال';
         connectionStatus.style.color = 'red';
     } else if (count === 0) {
         if (connectionStatus) {
