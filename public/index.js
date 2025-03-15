@@ -2,12 +2,39 @@
 const messageInputField = document.getElementById('message-input-field');
 const messageInputFieldBtn = document.getElementById('message-input-button');
 const chatThread = document.getElementsByClassName('chat-thread')[0];
+const loadingIndicator = document.getElementById('loading-indicator');
 
 // Groq API Key
 const API_KEY = "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"; // Replace with your Groq API key
 
 // WebSocket Connection
 const socket = new WebSocket('wss://bridge-server-socket.onrender.com');
+
+
+// Show loading indicator when the app starts
+loadingIndicator.style.display = 'flex';
+
+// Handle WebSocket connection open
+socket.onopen = () => {
+    console.log('WebSocket connection established.');
+    loadingIndicator.style.display = 'none'; // Hide loading indicator
+};
+
+// Handle WebSocket connection errors
+socket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+    loadingIndicator.innerHTML = '<p>Connection failed. Please try again later.</p>';
+};
+
+// Handle WebSocket connection close
+socket.onclose = () => {
+    console.log('WebSocket connection closed.');
+    loadingIndicator.style.display = 'flex';
+    loadingIndicator.innerHTML = '<p>Connection lost. Reconnecting...</p>';
+};
+
+
+
 
 // Function to update connection status
 function updateConnectionStatus(count) {

@@ -13,6 +13,36 @@ body {
     gap: 1.5rem;
 }
 
+
+
+/* Loading Indicator */
+#loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #1b56e0;
+    z-index: 1000;
+}
+
+#loading-indicator p {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+/* End Loading Indicator */
+
+
 .main {
     background-color: darkcyan;
     width: 100%;
