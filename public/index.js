@@ -55,6 +55,8 @@ function connectWebSocket() {
         setTimeout(connectWebSocket, reconnectInterval);
     };
 
+
+    
     // Log outgoing signaling messages
     socket.send = ((original) => {
         return function (data) {
@@ -63,16 +65,19 @@ function connectWebSocket() {
         };
     })(socket.send);
 
-    // Handle incoming messages
+    // Log incoming signaling messages
     socket.onmessage = async (event) => {
         const message = JSON.parse(event.data);
         console.log('Received message:', message);
 
         if (message.type === 'offer') {
+            console.log('Received offer:', message.offer);
             await handleOffer(message.offer);
         } else if (message.type === 'answer') {
+            console.log('Received answer:', message.answer);
             await handleAnswer(message.answer);
         } else if (message.type === 'candidate') {
+            console.log('Received ICE candidate:', message.candidate);
             await handleCandidate(message.candidate);
         } else if (message.type === 'connection') {
             clientCount = message.count;
@@ -125,6 +130,11 @@ function createPeerConnection() {
         console.log('Received remote track:', event.track.kind);
         remoteStream = event.streams[0];
         remoteVideo.srcObject = remoteStream;
+    
+        // Ensure the video element is playing
+        remoteVideo.play().catch((error) => {
+            console.error('Failed to play remote video:', error);
+        });
     };
 
     // Handle ICE candidates

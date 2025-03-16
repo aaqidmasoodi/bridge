@@ -47,8 +47,11 @@ body {
 }
 
 #local-video, #remote-video {
+    width: 100px;
+    height: 100px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    object-fit: cover; /* Ensures the video fills the container */
 }
 
 /* Main Chat Area */
