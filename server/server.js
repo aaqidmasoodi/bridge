@@ -8,7 +8,7 @@ let clientCount = 0;
 
 wss.on('connection', (ws) => {
     if (clientCount >= 2) {
-        console.log("Chatroom full.")
+        console.log("Chatroom full.");
         ws.close(1000, 'Chatroom is full. Only two clients are allowed.');
         return;
     }
@@ -23,17 +23,31 @@ wss.on('connection', (ws) => {
         }
     });
 
+    // Handle incoming messages from clients
     ws.on('message', (message) => {
-        console.log('Received:', message.toString());
+        const data = JSON.parse(message);
 
-        // Broadcast the message to all other clients
-        wss.clients.forEach((client) => {
-            if (client !== ws && client.readyState === WebSocket.OPEN) {
-                client.send(message.toString());
-            }
-        });
+        if (data.type === 'offer' || data.type === 'answer' || data.type === 'candidate') {
+            // Forward WebRTC signaling messages to the other client
+            wss.clients.forEach((client) => {
+                if (client !== ws && client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(data));
+                }
+            });
+        } else {
+            // Handle regular chat messages
+            console.log('Received chat message:', data);
+
+            // Broadcast the chat message to all other clients
+            wss.clients.forEach((client) => {
+                if (client !== ws && client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify(data));
+                }
+            });
+        }
     });
 
+    // Handle client disconnection
     ws.on('close', () => {
         clientCount--;
         console.log(`A client disconnected. Total clients: ${clientCount}`);

@@ -16,20 +16,28 @@
     <link rel="manifest" href="./manifest.json">
 </head>
 <body>
-    <!-- Add the connection-status element here -->
-     <!-- Loading Indicator -->
-     <div id="loading-indicator">
+    <!-- Loading Indicator -->
+    <div id="loading-indicator">
         <p>...تم بدء تشغيل التطبيق، يرجى الانتظار</p>
     </div>
     
     <div class="main">
+        <!-- Video Container -->
+        <div class="video-container">
+            <video id="local-video" autoplay muted width="100" height="100"></video>
+            <video id="remote-video" autoplay width="100" height="100"></video>
+        </div>
+
+        <!-- Chat Thread -->
         <div class="chat-thread">
             <!-- Chat threads here... -->
         </div>
+
+        <!-- Connection Status -->
         <div id="connection-status"></div>
 
+        <!-- Message Input -->
         <div class="message-input">
-
             <input type="text" autocomplete="off" class="message-input_field" id="message-input-field">
             <button type="submit" class="message-input_button" id="message-input-button">
                 <i class="fas fa-paper-plane" style="font-size: 32px; color: #007bff;"></i>
@@ -39,6 +47,7 @@
     
     <hr>
 
+    <!-- Credit Box -->
     <div class="credit-box">
         <p class="credit-info"> Designed & Developed by Aaqid</p>
         <p class="credit-info">تم التصميم والتطوير بواسطة عاقد</p>
