@@ -5,6 +5,7 @@ const chatThread = document.getElementsByClassName('chat-thread')[0];
 const loadingIndicator = document.getElementById('loading-indicator');
 const localVideo = document.getElementById('local-video');
 const remoteVideo = document.getElementById('remote-video');
+const startVideoButton = document.getElementById('start-video-button');
 
 // Groq API Key
 const API_KEY = "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";
@@ -32,7 +33,6 @@ function connectWebSocket() {
     socket.onopen = () => {
         console.log('WebSocket connection established.');
         loadingIndicator.style.display = 'none';
-        startLocalStream(); // Start video stream when WebSocket is connected
     };
 
     socket.onerror = (error) => {
@@ -70,8 +70,8 @@ function connectWebSocket() {
     };
 }
 
-// Start local video stream
-async function startLocalStream() {
+// Start local video stream after user interaction
+startVideoButton.addEventListener('click', async () => {
     try {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         localVideo.srcObject = localStream;
@@ -84,8 +84,9 @@ async function startLocalStream() {
         }
     } catch (error) {
         console.error('Error accessing media devices:', error);
+        alert('Failed to access camera and microphone. Please ensure permissions are granted.');
     }
-}
+});
 
 // Create RTCPeerConnection
 function createPeerConnection() {
