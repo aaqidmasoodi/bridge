@@ -27,14 +27,14 @@ function connectWebSocket() {
     // Handle WebSocket connection errors
     socket.onerror = (error) => {
         console.error('WebSocket error:', error);
-        loadingIndicator.innerHTML = '<p>Connection failed. Please try again later.</p>';
+        loadingIndicator.innerHTML = '<p>...فشل الاتصال. يُرجى المحاولة لاحقًا</p>';
     };
 
     // Handle WebSocket connection close and attempt reconnection
     socket.onclose = () => {
         console.log('WebSocket connection closed. Reconnecting...');
         loadingIndicator.style.display = 'flex';
-        loadingIndicator.innerHTML = '<p>Connection lost. Reconnecting...</p>';
+        loadingIndicator.innerHTML = '<p>...انقطع الاتصال. جاري إعادة الاتصال</p>';
         setTimeout(connectWebSocket, reconnectInterval); // Try to reconnect
     };
 }
@@ -55,7 +55,7 @@ function updateConnectionStatus(count) {
             connectionStatus.id = 'connection-status';
             document.body.insertBefore(connectionStatus, document.body.firstChild);
         }
-        connectionStatus.textContent = '... الشخص الآخر متصل';
+        connectionStatus.textContent = '...الشخص الآخر متصل';
         connectionStatus.style.color = 'green';
     } else if (count === 1) {
         if (!connectionStatus) {
@@ -63,7 +63,7 @@ function updateConnectionStatus(count) {
             connectionStatus.id = 'connection-status';
             document.body.insertBefore(connectionStatus, document.body.firstChild);
         }
-        connectionStatus.textContent = '... في انتظار شخص آخر للاتصال';
+        connectionStatus.textContent = '...في انتظار شخص آخر للاتصال';
         connectionStatus.style.color = 'red';
     } else if (count === 0) {
         if (connectionStatus) {
