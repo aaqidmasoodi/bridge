@@ -47,8 +47,6 @@ body {
 }
 
 #local-video, #remote-video {
-    /* width: 300px; */
-    /* height: 100px; */
     border: 1px solid #ccc;
     border-radius: 5px;
 }

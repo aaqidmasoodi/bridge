@@ -25,6 +25,9 @@ const configuration = {
     ]
 };
 
+// Track the number of connected clients (updated from server)
+let clientCount = 0;
+
 // Initialize WebSocket and WebRTC
 function connectWebSocket() {
     socket = new WebSocket(SOCKET_URL);
@@ -57,7 +60,9 @@ function connectWebSocket() {
         } else if (message.type === 'candidate') {
             await handleCandidate(message.candidate);
         } else if (message.type === 'connection') {
-            updateConnectionStatus(message.count);
+            // Update clientCount from the server
+            clientCount = message.count;
+            updateConnectionStatus(clientCount);
         } else {
             // Handle regular chat messages
             chatThread.innerHTML += `
@@ -76,11 +81,14 @@ startVideoButton.addEventListener('click', async () => {
         localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         localVideo.srcObject = localStream;
 
+        // Check if there are 2 clients connected
         if (clientCount === 2) {
             createPeerConnection();
             const offer = await peerConnection.createOffer();
             await peerConnection.setLocalDescription(offer);
             socket.send(JSON.stringify({ type: 'offer', offer: offer }));
+        } else {
+            alert('Waiting for another participant to connect...');
         }
     } catch (error) {
         console.error('Error accessing media devices:', error);
@@ -98,6 +106,7 @@ function createPeerConnection() {
     // Handle remote stream
     peerConnection.ontrack = (event) => {
         remoteStream = event.streams[0];
+        console.log('Remote stream tracks:', remoteStream.getTracks()); // Debugging
         remoteVideo.srcObject = remoteStream;
     };
 
@@ -105,6 +114,14 @@ function createPeerConnection() {
     peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
             socket.send(JSON.stringify({ type: 'candidate', candidate: event.candidate }));
+        }
+    };
+
+    // Debugging ICE connection state
+    peerConnection.oniceconnectionstatechange = () => {
+        console.log('ICE connection state:', peerConnection.iceConnectionState);
+        if (peerConnection.iceConnectionState === 'failed') {
+            console.error('ICE connection failed.');
         }
     };
 }
