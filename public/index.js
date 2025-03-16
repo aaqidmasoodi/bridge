@@ -21,7 +21,12 @@ let remoteStream;
 let peerConnection;
 const configuration = {
     iceServers: [
-        { urls: 'stun:stun.l.google.com:19302' } // Google's public STUN server
+        { urls: 'stun:stun.l.google.com:19302' }, // Google's public STUN server
+        { 
+            urls: 'turn:openrelay.metered.ca:80', // Replace with your TURN server
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        }
     ]
 };
 
@@ -50,8 +55,18 @@ function connectWebSocket() {
         setTimeout(connectWebSocket, reconnectInterval);
     };
 
+    // Log outgoing signaling messages
+    socket.send = ((original) => {
+        return function (data) {
+            console.log('Sending message:', data);
+            return original.apply(this, arguments);
+        };
+    })(socket.send);
+
+    // Handle incoming messages
     socket.onmessage = async (event) => {
         const message = JSON.parse(event.data);
+        console.log('Received message:', message);
 
         if (message.type === 'offer') {
             await handleOffer(message.offer);
@@ -60,7 +75,6 @@ function connectWebSocket() {
         } else if (message.type === 'candidate') {
             await handleCandidate(message.candidate);
         } else if (message.type === 'connection') {
-            // Update clientCount from the server
             clientCount = message.count;
             updateConnectionStatus(clientCount);
         } else {
@@ -101,19 +115,25 @@ function createPeerConnection() {
     peerConnection = new RTCPeerConnection(configuration);
 
     // Add local stream tracks
-    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+    localStream.getTracks().forEach(track => {
+        console.log('Adding local track:', track.kind);
+        peerConnection.addTrack(track, localStream);
+    });
 
     // Handle remote stream
     peerConnection.ontrack = (event) => {
+        console.log('Received remote track:', event.track.kind);
         remoteStream = event.streams[0];
-        console.log('Remote stream tracks:', remoteStream.getTracks()); // Debugging
         remoteVideo.srcObject = remoteStream;
     };
 
     // Handle ICE candidates
     peerConnection.onicecandidate = (event) => {
         if (event.candidate) {
+            console.log('Sending ICE candidate:', event.candidate);
             socket.send(JSON.stringify({ type: 'candidate', candidate: event.candidate }));
+        } else {
+            console.log('No more ICE candidates.');
         }
     };
 
